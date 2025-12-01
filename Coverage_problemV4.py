@@ -5,9 +5,9 @@ import matplotlib.patches as patches
 from deap import algorithms, base, creator, tools
 
 # ==========================================
-# 1. CONFIGURACIÓN DEL ESCENARIO (SOLUCIÓN ROBUSTA)
+# 1. CONFIGURACIÓN DEL ESCENARIO
 # ==========================================
-ANCHO_ROBOT_W = 3.0      # Aumentado a 3.0m para facilitar la captura
+ANCHO_ROBOT_W = 3.0
 VELOCIDAD_V = 1.5
 K_TURN = 5.0
 COBERTURA_MINIMA = 0.90
@@ -45,7 +45,7 @@ def calcular_cobertura_real(individual, S):
         if np.all(is_covered): break
         a, b = path[k], path[k+1]
         
-        # Bounding box rápido
+        # Bounding box
         x_min, y_min = np.min([a, b], axis=0) - ANCHO_ROBOT_W
         x_max, y_max = np.max([a, b], axis=0) + ANCHO_ROBOT_W
         
@@ -109,13 +109,11 @@ def evalCoveragePath_Continuous(individual):
         return coste_operativo,
     else:
         falta = COBERTURA_MINIMA - ratio_cobertura
-        # PENALIZACIÓN EXPONENCIAL: Esto fuerza a cerrar el gap del 89% al 90%
-        # Elevamos al cuadrado para que la diferencia entre 0.01 (1%) y 0.00 sea enorme
         penalizacion = 2000 + (falta * 50000) 
         return penalizacion,
 
 # -----------------------------------------------------------
-# NUEVA MUTACIÓN: GAUSSIANA + TELETRANSPORTE
+# MUTACIÓN: GAUSSIANA + TELETRANSPORTE
 # -----------------------------------------------------------
 def mutacion_agresiva(individual, indpb):
     """
@@ -129,7 +127,7 @@ def mutacion_agresiva(individual, indpb):
             # Clipping obligatorio
             individual[i] = max(0, min(individual[i], DIM_X))
     
-    # 2. TELETRANSPORTE (La clave para salir del mínimo local 1100)
+    # 2. TELETRANSPORTE
     # 5% de probabilidad de resetear completamente una coordenada
     if random.random() < 0.05:
         idx = random.randint(0, len(individual)-1)
@@ -140,8 +138,10 @@ def mutacion_agresiva(individual, indpb):
 # REGISTRO DE OPERADORES FINAL
 # cxBlend funciona bien para coordenadas continuas
 toolbox.register("mate", tools.cxBlend, alpha=0.5)
-# Usamos nuestra nueva mutación agresiva
+    
+# Usamos la mutación agresiva
 toolbox.register("mutate", mutacion_agresiva, indpb=0.1)
+
 # Torneo tamaño 2 para mantener diversidad y no matar prematuramente a los mutantes
 toolbox.register("select", tools.selTournament, tournsize=2)
 toolbox.register("evaluate", evalCoveragePath_Continuous)
@@ -219,7 +219,6 @@ def plot_pareto_fitness(pop, S):
         diffs = np.diff(path, axis=0)
         t_line = np.sum(np.linalg.norm(diffs, axis=1)) / VELOCIDAD_V
         
-        # Si tiene penalización (fitness > 2000), no lo pintamos o lo pintamos diferente
         # Aquí pintamos el coste real vs cobertura real para ver la nube
         coste_real = t_line
         cob = calcular_cobertura_real(ind, S)
@@ -266,7 +265,7 @@ def main():
     cobertura_pct = calcular_cobertura_real(best_ind, S_points)
     
     # Lógica de impresión
-    if fit >= 2000: # Umbral de la nueva penalización base
+    if fit >= 2000: # Umbral de la penalización base
         print(f"\nAVISO: No se alcanzó el 90%. Se alcanzó: {cobertura_pct:.2f}%. Fitness Penalizado: {fit:.2f}")
     else:
         print(f"\n¡ÉXITO! Se cumplió la restricción. Cobertura >= 90%, se alcanzó: {cobertura_pct:.2f}%. Fitness Real: {fit:.2f}")
