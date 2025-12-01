@@ -7,7 +7,7 @@ This project implements a **Real-Coded Genetic Algorithm (GA)** designed to solv
 ## 🚀 Key Features
 
 * **Continuous Space Optimization:** Trajectory generation based on real-valued coordinates rather than discrete grid decomposition.
-* **Hybrid Evolutionary Strategy:** Implements a $(\mu+\lambda)$ strategy with BLX-$\alpha$ recombination.
+* **Hybrid Evolutionary Strategy:** Implements a $(\mu+\lambda)$ strategy with BLX-alpha recombination.
 * **Novel Mutation Operator:** Combines Gaussian local refinement with a **Teleportation Mutation** mechanism to escape local optima in complex geometric configurations.
 * **Dynamic Penalty Handling:** A robust fitness function that strictly enforcing coverage constraints ($\ge 90\%$) while optimizing efficiency.
 * **Visualization Tools:** Automated generation of trajectory maps, convergence profiles, and Pareto front approximations.
