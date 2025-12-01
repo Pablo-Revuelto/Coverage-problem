@@ -4,10 +4,10 @@ import pandas as pd
 import numpy as np
 
 # ==========================================
-# DATOS (Extraídos de tu mensaje)
+# DATOS
 # ==========================================
 
-# GA: Genetic Algorithm (Costes reales, todos éxito 90%)
+# GA: Genetic Algorithm
 ga_data = {
     15: [7500.00, 709.08, 5500.00, 6500.00],
     20: [1010.52, 904.08, 839.28, 1114.09],
@@ -26,7 +26,7 @@ sa_data = {
 }
 
 # ==========================================
-# PREPARACIÓN DE DATOS PARA SEABORN
+# PREPARACIÓN DE DATOS
 # ==========================================
 data_list = []
 
@@ -43,7 +43,7 @@ df = pd.DataFrame(data_list)
 # ==========================================
 # GENERACIÓN DEL PLOT
 # ==========================================
-# Configuración de estilo profesional
+# Configuración
 sns.set_theme(style="whitegrid")
 plt.figure(figsize=(10, 6))
 
@@ -52,19 +52,18 @@ plt.figure(figsize=(10, 6))
 ax = sns.boxplot(data=df, x="Waypoints (K)", y="Cost (Fitness)", hue="Algorithm", 
                  palette=["#3498db", "#e74c3c"], linewidth=1.5, fliersize=5)
 
-# --- PUNTOS CLAVE PARA QUE QUEDE BIEN ---
 # 1. ESCALA LOGARÍTMICA: Fundamental por la diferencia de magnitudes
 ax.set_yscale("log")
 
-# 2. Títulos y etiquetas claras
+# 2. Títulos y etiquetas
 ax.set_title("Cost Distribution Comparison: GA vs. SA", fontsize=14, fontweight='bold', pad=20)
 ax.set_ylabel("Final Cost (Log Scale)", fontsize=12)
 ax.set_xlabel("Number of Waypoints (K)", fontsize=12)
 
-# 3. Mejorar la leyenda
+# 3. Leyenda
 plt.legend(title="Method", title_fontsize=11, fontsize=10, loc='upper right', frameon=True, shadow=True)
 
-# 4. Añadir una nota sobre la escala log
+# 4. Nota sobre la escala log
 plt.text(0.02, 0.02, "Note: Y-axis is on a logarithmic scale due to high penalty values in SA results.", 
          transform=ax.transAxes, fontsize=9, style='italic', bbox=dict(facecolor='white', alpha=0.8))
 
